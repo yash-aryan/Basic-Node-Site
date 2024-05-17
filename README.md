@@ -1,2 +1,3 @@
 # Basic-Node-Site
-Practice project for NodeJS
+
+Simple projec to practice Node.js and Express.js

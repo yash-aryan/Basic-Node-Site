@@ -1,19 +1,29 @@
-const http = require('http');
-const fs = require('fs');
+const express = require('express');
+const app = express();
+const port = 8080;
+const options = { root: __dirname };
 
-http.createServer((req, res) => {
-	const myURL = new URL(req.url, `http://${req.headers.host}`);
-	const filePath = myURL.pathname === '/' ? './index.html' : `.${myURL.pathname}.html`;
+app.use((req, res, next) => {
+	console.log(`Incoming request: ${req.path}`);
+	next();
+});
 
-	fs.readFile(filePath, (err, data) => {
-		if (err) {
-			res.writeHead(404, { 'Content-Type': 'text/html' });
-			fs.readFile('./error.html', (e, errorPageData) => res.end(errorPageData));
-			return;
-		}
+app.get('/', (req, res) => {
+	res.sendFile('index.html', options);
+});
 
-		res.writeHead(200, { 'Content-Type': 'text/html' });
-		res.write(data);
-		res.end();
-	});
-}).listen(8080);
+app.get('/about', (req, res) => {
+	res.sendFile('about.html', options);
+});
+
+app.get('/contact-me', (req, res) => {
+	res.sendFile('contact-me.html', options);
+});
+
+app.get('*', (req, res) => {
+	res.sendFile('error.html', options);
+});
+
+app.listen(port, () => {
+	console.log(`App listening on port ${port}!`);
+});
